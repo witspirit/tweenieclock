@@ -3,6 +3,7 @@ package be.witspirit.tweenieclock;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -19,7 +20,7 @@ public class TweenieClock extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("Tweenie Clock");
 
         StackPane root = new StackPane();
         Scene scene = new Scene(root, 300, 250);
@@ -33,6 +34,7 @@ public class TweenieClock extends Application {
 
         Image center = new Image("detail_purple_center.png");
         ImageView centerHighlight = new ImageView(center);
+        StackPane.setAlignment(centerHighlight, Pos.TOP_LEFT);
 
 
 
