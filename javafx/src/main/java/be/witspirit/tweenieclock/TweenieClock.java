@@ -41,19 +41,38 @@ public class TweenieClock extends Application {
         AnchorPane.setRightAnchor(clockView, 0.0);
         root.getChildren().add(clockView);
 
-        Image center = new Image("detail_purple_center.png");
-        ImageView centerHighlight = new ImageView(center);
-        AnchorPane.setLeftAnchor(centerHighlight, 1089.0);
-        AnchorPane.setTopAnchor(centerHighlight, 919.0);
+        ImageView center = createDetail("purple_center", 1089, 919);
+        ImageView exclamation = createDetail("yellow_exclamation", 957, 462);
+        ImageView mobile = createDetail("blue_mobile", 1338, 467);
+        ImageView music = createDetail("green_music", 1519, 842);
+        ImageView kid = createDetail("red_kid", 1431, 1254);
+        ImageView playground = createDetail("pink_playground", 1134, 1503);
+        ImageView train = createDetail("yellow_train", 864, 1590);
+        ImageView puppetry = createDetail("purple_puppetry", 688, 1217);
+        ImageView tinker = createDetail("brown_tinker", 644, 716);
 
         ColorAdjust highlight = new ColorAdjust();
         // highlight.setBrightness(-0.1);
         highlight.setSaturation(0.2);
-        centerHighlight.setEffect(highlight);
+        center.setEffect(highlight);
 
 
-        root.getChildren().add(centerHighlight);
+        root.getChildren().add(center);
+        root.getChildren().add(exclamation);
+        root.getChildren().add(mobile);
+        root.getChildren().add(music);
+        root.getChildren().add(kid);
+        root.getChildren().add(playground);
+        root.getChildren().add(train);
+        root.getChildren().add(puppetry);
+        root.getChildren().add(tinker);
 
+        bindImageSizeToScene(root, scene, clock);
+
+        primaryStage.show();
+    }
+
+    private void bindImageSizeToScene(AnchorPane root, Scene scene, Image clock) {
         DoubleBinding heightScale = scene.heightProperty().divide(clock.getHeight());
         DoubleBinding widthScale = scene.widthProperty().divide(clock.getWidth());
 
@@ -61,8 +80,13 @@ public class TweenieClock extends Application {
         scale.yProperty().bind(heightScale);
         scale.xProperty().bind(widthScale);
         root.getTransforms().add(scale);
+    }
 
-
-        primaryStage.show();
+    private ImageView createDetail(String baseName, int left, int top) {
+        Image detail = new Image("detail_"+baseName+".png");
+        ImageView detailView = new ImageView(detail);
+        AnchorPane.setLeftAnchor(detailView, (double) left);
+        AnchorPane.setTopAnchor(detailView, (double) top);
+        return detailView;
     }
 }
