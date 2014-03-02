@@ -1,18 +1,26 @@
 package be.witspirit.tweenieclock;
 
-import javafx.animation.ScaleTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.animation.TimelineBuilder;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleBinding;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.RadialGradientBuilder;
+import javafx.scene.paint.Stop;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -51,13 +59,41 @@ public class TweenieClock extends Application {
         ImageView puppetry = createDetail("purple_puppetry", 688, 1217);
         ImageView tinker = createDetail("brown_tinker", 644, 716);
 
-        ColorAdjust highlight = new ColorAdjust();
-        // highlight.setBrightness(-0.1);
-        highlight.setSaturation(0.2);
-        center.setEffect(highlight);
+        Ellipse overlay = new Ellipse();
+        overlay.setRadiusX(center.getImage().getWidth()/2);
+        overlay.setRadiusY(center.getImage().getHeight()/2);
+        overlay.setBlendMode(BlendMode.OVERLAY);
+        AnchorPane.setLeftAnchor(overlay, 1089.0);
+        AnchorPane.setTopAnchor(overlay, 919.0);
+
+//        AnchorPane.setLeftAnchor(overlay, 300.0);
+//        AnchorPane.setTopAnchor(overlay, 300.0);
+
+        RadialGradient gradient = RadialGradientBuilder.create()
+                .stops(new Stop(0.0, Color.WHITE),
+                       new Stop(1.0, Color.BLACK))
+                .radius(0.6)
+                .focusDistance(0.0)
+                .centerX(0.5)
+                .centerY(0.5)
+                .build();
+        overlay.setFill(gradient);
+
+        BoxBlur bb = new BoxBlur();
+        bb.setWidth(10);
+        bb.setHeight(10);
+        bb.setIterations(3);
+        overlay.setEffect(bb);
+
+        Timeline timeline = TimelineBuilder.create().cycleCount(Timeline.INDEFINITE).autoReverse(true)
+                .keyFrames(new KeyFrame(Duration.millis(500), new KeyValue(overlay.opacityProperty(), 0.0)),
+                           new KeyFrame(Duration.millis(500), new KeyValue(overlay.opacityProperty(), 0.8)))
+                .build();
+        timeline.play();
 
 
         root.getChildren().add(center);
+        root.getChildren().add(overlay);
         root.getChildren().add(exclamation);
         root.getChildren().add(mobile);
         root.getChildren().add(music);
@@ -82,11 +118,17 @@ public class TweenieClock extends Application {
         root.getTransforms().add(scale);
     }
 
-    private ImageView createDetail(String baseName, int left, int top) {
+    private ImageView createDetail(final String baseName, int left, int top) {
         Image detail = new Image("detail_"+baseName+".png");
         ImageView detailView = new ImageView(detail);
         AnchorPane.setLeftAnchor(detailView, (double) left);
         AnchorPane.setTopAnchor(detailView, (double) top);
+        detailView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                System.out.println(baseName+" clicked");
+            }
+        });
         return detailView;
     }
 }
