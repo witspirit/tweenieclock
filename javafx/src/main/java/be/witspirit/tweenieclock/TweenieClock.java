@@ -49,59 +49,25 @@ public class TweenieClock extends Application {
         AnchorPane.setRightAnchor(clockView, 0.0);
         root.getChildren().add(clockView);
 
-        ImageView center = createDetail("purple_center", 1089, 919);
-        ImageView exclamation = createDetail("yellow_exclamation", 957, 462);
-        ImageView mobile = createDetail("blue_mobile", 1338, 467);
-        ImageView music = createDetail("green_music", 1519, 842);
-        ImageView kid = createDetail("red_kid", 1431, 1254);
-        ImageView playground = createDetail("pink_playground", 1134, 1503);
-        ImageView train = createDetail("yellow_train", 864, 1590);
-        ImageView puppetry = createDetail("purple_puppetry", 688, 1217);
-        ImageView tinker = createDetail("brown_tinker", 644, 716);
+        Detail center = new Detail("purple_center", 1089, 919);
+        Detail exclamation = new Detail("yellow_exclamation", 957, 462);
+        Detail mobile = new Detail("blue_mobile", 1338, 467);
+        Detail music = new Detail("green_music", 1519, 842);
+        Detail kid = new Detail("red_kid", 1431, 1254);
+        Detail playground = new Detail("pink_playground", 1134, 1503);
+        Detail train = new Detail("yellow_train", 864, 1590);
+        Detail puppetry = new Detail("purple_puppetry", 688, 1217);
+        Detail tinker = new Detail("brown_tinker", 644, 716);
 
-        Ellipse overlay = new Ellipse();
-        overlay.setRadiusX(center.getImage().getWidth()/2);
-        overlay.setRadiusY(center.getImage().getHeight()/2);
-        overlay.setBlendMode(BlendMode.OVERLAY);
-        AnchorPane.setLeftAnchor(overlay, 1089.0);
-        AnchorPane.setTopAnchor(overlay, 919.0);
-
-//        AnchorPane.setLeftAnchor(overlay, 300.0);
-//        AnchorPane.setTopAnchor(overlay, 300.0);
-
-        RadialGradient gradient = RadialGradientBuilder.create()
-                .stops(new Stop(0.0, Color.WHITE),
-                       new Stop(1.0, Color.BLACK))
-                .radius(0.6)
-                .focusDistance(0.0)
-                .centerX(0.5)
-                .centerY(0.5)
-                .build();
-        overlay.setFill(gradient);
-
-        BoxBlur bb = new BoxBlur();
-        bb.setWidth(10);
-        bb.setHeight(10);
-        bb.setIterations(3);
-        overlay.setEffect(bb);
-
-        Timeline timeline = TimelineBuilder.create().cycleCount(Timeline.INDEFINITE).autoReverse(true)
-                .keyFrames(new KeyFrame(Duration.millis(500), new KeyValue(overlay.opacityProperty(), 0.0)),
-                           new KeyFrame(Duration.millis(500), new KeyValue(overlay.opacityProperty(), 0.8)))
-                .build();
-        timeline.play();
-
-
-        root.getChildren().add(center);
-        root.getChildren().add(overlay);
-        root.getChildren().add(exclamation);
-        root.getChildren().add(mobile);
-        root.getChildren().add(music);
-        root.getChildren().add(kid);
-        root.getChildren().add(playground);
-        root.getChildren().add(train);
-        root.getChildren().add(puppetry);
-        root.getChildren().add(tinker);
+        center.addTo(root);
+        exclamation.addTo(root);
+        mobile.addTo(root);
+        music.addTo(root);
+        kid.addTo(root);
+        playground.addTo(root);
+        train.addTo(root);
+        puppetry.addTo(root);
+        tinker.addTo(root);
 
         bindImageSizeToScene(root, scene, clock);
 
@@ -118,17 +84,4 @@ public class TweenieClock extends Application {
         root.getTransforms().add(scale);
     }
 
-    private ImageView createDetail(final String baseName, int left, int top) {
-        Image detail = new Image("detail_"+baseName+".png");
-        ImageView detailView = new ImageView(detail);
-        AnchorPane.setLeftAnchor(detailView, (double) left);
-        AnchorPane.setTopAnchor(detailView, (double) top);
-        detailView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                System.out.println(baseName+" clicked");
-            }
-        });
-        return detailView;
-    }
 }
