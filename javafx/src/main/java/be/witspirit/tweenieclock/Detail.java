@@ -1,6 +1,8 @@
 package be.witspirit.tweenieclock;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.Image;
@@ -25,12 +27,15 @@ public class Detail {
     public Detail(final String baseName, int left, int top) {
         Image detail = new Image("detail_"+baseName+".png");
         detailView = new ImageView(detail);
-        AnchorPane.setLeftAnchor(detailView, (double) left); // FIXME Assume AnchorPane
-        AnchorPane.setTopAnchor(detailView, (double) top);
-
         overlay = createOverlay(detailView);
-        AnchorPane.setLeftAnchor(overlay, (double) left);
+
+        // Creating the ImageView to derive the overlay, but actually
+        // I no longer need the ImageView... The overlay on top of the
+        // global image has already the desired effect
+
+        AnchorPane.setLeftAnchor(overlay, (double) left); // FIXME Assume AnchorPane
         AnchorPane.setTopAnchor(overlay, (double) top);
+
 
         overlay.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -45,10 +50,19 @@ public class Detail {
             }
         });
 
+        setHighlight(false);
+
+    }
+
+    public void setHighlight(boolean enabled) {
+        overlay.setOpacity(enabled ? 0.8 : 0.0);
+    }
+
+    public DoubleProperty opacityProperty() {
+        return overlay.opacityProperty();
     }
 
     public void addTo(Pane pane) {
-        pane.getChildren().add(detailView);
         pane.getChildren().add(overlay);
     }
 

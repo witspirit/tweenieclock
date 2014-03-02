@@ -1,11 +1,10 @@
 package be.witspirit.tweenieclock;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.animation.TimelineBuilder;
+import javafx.animation.*;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.DoubleProperty;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.effect.BlendMode;
@@ -24,6 +23,9 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TweenieClock extends Application {
 
@@ -50,6 +52,7 @@ public class TweenieClock extends Application {
         root.getChildren().add(clockView);
 
         Detail center = new Detail("purple_center", 1089, 919);
+
         Detail exclamation = new Detail("yellow_exclamation", 957, 462);
         Detail mobile = new Detail("blue_mobile", 1338, 467);
         Detail music = new Detail("green_music", 1519, 842);
@@ -72,6 +75,29 @@ public class TweenieClock extends Application {
         bindImageSizeToScene(root, scene, clock);
 
         primaryStage.show();
+
+        spin(exclamation, mobile, music, kid, playground, train, puppetry, tinker);
+    }
+
+    private void spin(Detail... details) {
+        final List<Timeline> timelines = new ArrayList<>();
+        for (int i=0; i < details.length; i++) {
+            DoubleProperty opacity = details[i].opacityProperty();
+            Timeline timeline = TimelineBuilder.create().cycleCount(2).autoReverse(true).keyFrames(
+                    new KeyFrame(Duration.ZERO, new KeyValue(opacity, 0.0)),
+                    new KeyFrame(Duration.seconds(0.2), new KeyValue(opacity, 0.9)),
+                    new KeyFrame(Duration.seconds(0.1), new KeyValue(opacity, 0.9))
+            ).build();
+            final int nextTimelineIndex = i == details.length-1 ? 0 : i+1;
+            timeline.setOnFinished(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    timelines.get(nextTimelineIndex).playFromStart();
+                }
+            });
+            timelines.add(timeline);
+        }
+        timelines.get(0).playFromStart();
     }
 
     private void bindImageSizeToScene(AnchorPane root, Scene scene, Image clock) {
