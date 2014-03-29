@@ -7,25 +7,15 @@ import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.RadialGradient;
-import javafx.scene.paint.RadialGradientBuilder;
-import javafx.scene.paint.Stop;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Ellipse;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TweenieClock extends Application {
 
@@ -76,28 +66,30 @@ public class TweenieClock extends Application {
 
         primaryStage.show();
 
-        spin(exclamation, mobile, music, kid, playground, train, puppetry, tinker);
-    }
+        final Spinner spinner = new Spinner(exclamation, mobile, music, kid, playground, train, puppetry, tinker);
 
-    private void spin(Detail... details) {
-        final List<Timeline> timelines = new ArrayList<>();
-        for (int i=0; i < details.length; i++) {
-            DoubleProperty opacity = details[i].opacityProperty();
-            Timeline timeline = TimelineBuilder.create().cycleCount(2).autoReverse(true).keyFrames(
-                    new KeyFrame(Duration.ZERO, new KeyValue(opacity, 0.0)),
-                    new KeyFrame(Duration.seconds(0.2), new KeyValue(opacity, 0.9)),
-                    new KeyFrame(Duration.seconds(0.1), new KeyValue(opacity, 0.9))
-            ).build();
-            final int nextTimelineIndex = i == details.length-1 ? 0 : i+1;
-            timeline.setOnFinished(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    timelines.get(nextTimelineIndex).playFromStart();
+        final Random random = new Random();
+
+        center.getOverlay().setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (!spinner.isSpinning()) {
+                    spinner.start();
+
+                    int spinningTime = 5 * 1000 + random.nextInt(3000); // 5 seconds spinning + an arbitrary extra up to 3 seconds
+
+                    // A Timer could also have worked, but caused application to not shutdown... So used this instead
+                    TimelineBuilder.create().keyFrames(new KeyFrame(Duration.millis(spinningTime), new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent actionEvent) {
+                            spinner.stop();
+                        }
+                    })).cycleCount(1).build().playFromStart();
                 }
-            });
-            timelines.add(timeline);
-        }
-        timelines.get(0).playFromStart();
+
+            }
+        });
+
     }
 
     private void bindImageSizeToScene(AnchorPane root, Scene scene, Image clock) {

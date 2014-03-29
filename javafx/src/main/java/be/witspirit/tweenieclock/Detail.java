@@ -37,21 +37,25 @@ public class Detail {
         AnchorPane.setTopAnchor(overlay, (double) top);
 
 
-        overlay.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                System.out.println(baseName+" clicked");
-
-                if (overlay.getOpacity() > 0) {
-                    overlay.setOpacity(0.0);
-                } else {
-                    overlay.setOpacity(0.8);
-                }
-            }
-        });
+//        overlay.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent mouseEvent) {
+//                System.out.println(baseName+" clicked");
+//
+//                if (overlay.getOpacity() > 0) {
+//                    overlay.setOpacity(0.0);
+//                } else {
+//                    overlay.setOpacity(0.8);
+//                }
+//            }
+//        });
 
         setHighlight(false);
 
+    }
+
+    public Ellipse getOverlay() {
+        return overlay;
     }
 
     public void setHighlight(boolean enabled) {
