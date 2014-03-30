@@ -43,30 +43,30 @@ public class TweenieClock extends Application {
 
         Detail center = new Detail("purple_center", 1089, 919);
 
-        Detail exclamation = new Detail("yellow_exclamation", 957, 462);
-        Detail mobile = new Detail("blue_mobile", 1338, 467);
+        Detail tv = new Detail("yellow_tv", 957, 462);
+        Detail puppetry = new Detail("blue_puppetry", 1338, 467);
         Detail music = new Detail("green_music", 1519, 842);
-        Detail kid = new Detail("red_kid", 1431, 1254);
+        Detail wii = new Detail("red_wii", 1431, 1254);
         Detail playground = new Detail("pink_playground", 1134, 1503);
         Detail train = new Detail("yellow_train", 864, 1590);
-        Detail puppetry = new Detail("purple_puppetry", 688, 1217);
+        Detail show = new Detail("purple_show", 688, 1217);
         Detail tinker = new Detail("brown_tinker", 644, 716);
 
         center.addTo(root);
-        exclamation.addTo(root);
-        mobile.addTo(root);
+        tv.addTo(root);
+        puppetry.addTo(root);
         music.addTo(root);
-        kid.addTo(root);
+        wii.addTo(root);
         playground.addTo(root);
         train.addTo(root);
-        puppetry.addTo(root);
+        show.addTo(root);
         tinker.addTo(root);
 
         bindImageSizeToScene(root, scene, clock);
 
         primaryStage.show();
 
-        final Spinner spinner = new Spinner(exclamation, mobile, music, kid, playground, train, puppetry, tinker);
+        final Spinner spinner = new Spinner(tv, puppetry, music, wii, playground, train, show, tinker);
 
         final Random random = new Random();
 
@@ -76,7 +76,7 @@ public class TweenieClock extends Application {
                 if (!spinner.isSpinning()) {
                     spinner.start();
 
-                    int spinningTime = 5 * 1000 + random.nextInt(3000); // 5 seconds spinning + an arbitrary extra up to 3 seconds
+                    int spinningTime = 4 * 1000 + random.nextInt(4500); // 4 seconds spinning + an arbitrary extra up to 4 seconds
 
                     // A Timer could also have worked, but caused application to not shutdown... So used this instead
                     TimelineBuilder.create().keyFrames(new KeyFrame(Duration.millis(spinningTime), new EventHandler<ActionEvent>() {

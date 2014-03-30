@@ -12,11 +12,13 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Spinner {
     private Detail[] details;
     private List<Timeline> timelines;
     private boolean spinning = false;
+    private Random random = new Random();
 
     public Spinner(Detail... details) {
         this.details = details;
@@ -38,7 +40,7 @@ public class Spinner {
         if (!spinning) {
             reset();
             spinning = true;
-            timelines.get(0).playFromStart();
+            timelines.get(random.nextInt(details.length)).playFromStart();
         }
     }
 
