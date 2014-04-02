@@ -1,9 +1,9 @@
 package be.witspirit.tweenieclock;
 
-import javafx.animation.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.TimelineBuilder;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -15,7 +15,7 @@ import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.*;
+import java.util.Random;
 
 public class TweenieClock extends Application {
 
