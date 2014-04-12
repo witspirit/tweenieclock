@@ -52,15 +52,15 @@ public class TweenieClock extends Application {
         Detail show = new Detail("purple_show", 688, 1217);
         Detail tinker = new Detail("brown_tinker", 644, 716);
 
-        center.addTo(root);
-        tv.addTo(root);
-        puppetry.addTo(root);
-        music.addTo(root);
-        wii.addTo(root);
-        playground.addTo(root);
-        train.addTo(root);
-        show.addTo(root);
-        tinker.addTo(root);
+        addTo(root, center);
+        addTo(root, tv);
+        addTo(root, puppetry);
+        addTo(root, music);
+        addTo(root, wii);
+        addTo(root, playground);
+        addTo(root, train);
+        addTo(root, show);
+        addTo(root, tinker);
 
         bindImageSizeToScene(root, scene, clock);
 
@@ -90,6 +90,12 @@ public class TweenieClock extends Application {
             }
         });
 
+    }
+
+    private void addTo(AnchorPane pane, Detail detail) {
+        AnchorPane.setLeftAnchor(detail.getOverlay(), detail.getTopLeftAnchor().getX());
+        AnchorPane.setTopAnchor(detail.getOverlay(), detail.getTopLeftAnchor().getY());
+        pane.getChildren().add(detail.getOverlay());
     }
 
     private void bindImageSizeToScene(AnchorPane root, Scene scene, Image clock) {
