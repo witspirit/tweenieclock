@@ -41,32 +41,22 @@ public class TweenieClock extends Application {
         AnchorPane.setRightAnchor(clockView, 0.0);
         root.getChildren().add(clockView);
 
-        Detail center = new Detail("purple_center", 1089, 919);
+        Detail center = addTo(root, new Detail("purple_center", 1089, 919));
 
-        Detail tv = new Detail("yellow_tv", 957, 462);
-        Detail puppetry = new Detail("blue_puppetry", 1338, 467);
-        Detail music = new Detail("green_music", 1519, 842);
-        Detail wii = new Detail("red_wii", 1431, 1254);
-        Detail playground = new Detail("pink_playground", 1134, 1503);
-        Detail train = new Detail("yellow_train", 864, 1590);
-        Detail show = new Detail("purple_show", 688, 1217);
-        Detail tinker = new Detail("brown_tinker", 644, 716);
-
-        addTo(root, center);
-        addTo(root, tv);
-        addTo(root, puppetry);
-        addTo(root, music);
-        addTo(root, wii);
-        addTo(root, playground);
-        addTo(root, train);
-        addTo(root, show);
-        addTo(root, tinker);
+        Detail tv = addTo(root, new Detail("yellow_tv", 957, 462));
+        Detail puppetry = addTo(root, new Detail("blue_puppetry", 1338, 467));
+        Detail music = addTo(root, new Detail("green_music", 1519, 842));
+        Detail wii = addTo(root, new Detail("red_wii", 1431, 1254));
+        Detail playground = addTo(root, new Detail("pink_playground", 1134, 1503));
+        Detail train = addTo(root, new Detail("yellow_train", 864, 1590));
+        Detail show = addTo(root, new Detail("purple_show", 688, 1217));
+        Detail tinker = addTo(root, new Detail("brown_tinker", 644, 716));
 
         bindImageSizeToScene(root, scene, clock);
 
         primaryStage.show();
 
-        final Spinner spinner = new Spinner(tv, puppetry, music, wii, playground, train, show, tinker);
+        final Spinner2 spinner = new Spinner2(tv, puppetry, music, wii, playground, train, show, tinker);
 
         final Random random = new Random();
 
@@ -75,6 +65,8 @@ public class TweenieClock extends Application {
             public void handle(MouseEvent mouseEvent) {
                 if (!spinner.isSpinning()) {
                     spinner.start();
+
+                    // spinner.stopBetweenCycles(4, 8);
 
                     int spinningTime = 4 * 1000 + random.nextInt(4500); // 4 seconds spinning + an arbitrary extra up to 4 seconds
 
@@ -92,10 +84,11 @@ public class TweenieClock extends Application {
 
     }
 
-    private void addTo(AnchorPane pane, Detail detail) {
+    private Detail addTo(AnchorPane pane, Detail detail) {
         AnchorPane.setLeftAnchor(detail.getOverlay(), detail.getTopLeftAnchor().getX());
         AnchorPane.setTopAnchor(detail.getOverlay(), detail.getTopLeftAnchor().getY());
         pane.getChildren().add(detail.getOverlay());
+        return detail;
     }
 
     private void bindImageSizeToScene(AnchorPane root, Scene scene, Image clock) {
