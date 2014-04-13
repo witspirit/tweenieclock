@@ -84,6 +84,10 @@ public class Detail {
         return overlay.opacityProperty();
     }
 
+    public DoubleProperty scaleProperty() {
+        return scaleProperty;
+    }
+
     private Ellipse createOverlay(ImageView detail) {
         Ellipse overlay = new Ellipse();
         overlay.setRadiusX(detail.getImage().getWidth() / 2);

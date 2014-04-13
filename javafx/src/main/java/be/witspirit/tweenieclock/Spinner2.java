@@ -2,15 +2,17 @@ package be.witspirit.tweenieclock;
 
 
 import javafx.animation.*;
-import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.util.Duration;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Spinner2 {
+    private static final double TRANSITION_TIME = 0.08; // Seconds
+    private static final double STABLE_TIME = 0.04; // Seconds
+
+
     private Detail[] details;
     private boolean spinning = false;
     private Random random = new Random();
@@ -18,11 +20,13 @@ public class Spinner2 {
     private Timeline timeline;
     private int currentIndex = 0;
     private DelegatedDoubleValue currentOpacity;
+    private DelegatedDoubleValue currentScale;
 
 
     public Spinner2(Detail... details) {
         this.details = details;
         currentOpacity = new DelegatedDoubleValue(details[currentIndex].opacityProperty());
+        currentScale = new DelegatedDoubleValue(details[currentIndex].scaleProperty());
 
         setupTimeline();
     }
@@ -44,7 +48,7 @@ public class Spinner2 {
             spinning = true;
 
             currentIndex = random.nextInt(details.length);
-            currentOpacity.setDelegate(details[currentIndex].opacityProperty());
+            updateDelegates();
 
             timeline.playFromStart();
         }
@@ -60,9 +64,9 @@ public class Spinner2 {
     private void setupTimeline() {
         timeline = TimelineBuilder.create().cycleCount(Timeline.INDEFINITE).autoReverse(false).keyFrames(
             new KeyFrame(Duration.ZERO, new KeyValue(currentOpacity, 0.0)),
-            new KeyFrame(Duration.seconds(0.1), new KeyValue(currentOpacity, 0.9, Interpolator.EASE_BOTH)),
-            new KeyFrame(Duration.seconds(0.2), new KeyValue(currentOpacity, 0.9)),
-            new KeyFrame(Duration.seconds(0.3), new SetNextHandler(), new KeyValue(currentOpacity, 0.0, Interpolator.EASE_BOTH))
+            new KeyFrame(Duration.seconds(TRANSITION_TIME), new KeyValue(currentOpacity, 0.9, Interpolator.EASE_BOTH), new KeyValue(currentScale, 1.05, Interpolator.EASE_BOTH)),
+            new KeyFrame(Duration.seconds(TRANSITION_TIME+STABLE_TIME), new KeyValue(currentOpacity, 0.9), new KeyValue(currentScale, 1.05)),
+            new KeyFrame(Duration.seconds(TRANSITION_TIME*2 + STABLE_TIME), new SetNextHandler(), new KeyValue(currentOpacity, 0.0, Interpolator.EASE_BOTH), new KeyValue(currentScale, 1.0, Interpolator.EASE_BOTH))
         ).build();
     }
 
@@ -71,15 +75,23 @@ public class Spinner2 {
         @Override
         public void handle(ActionEvent actionEvent) {
             if (spinning) {
-                currentIndex++;
-                if (currentIndex >= details.length) {
-                    currentIndex = 0;
-                }
-                currentOpacity.setDelegate(details[currentIndex].opacityProperty());
+                incrementIndex();
+                updateDelegates();
             }
         }
     }
 
+    private void incrementIndex() {
+        currentIndex++;
+        if (currentIndex >= details.length) {
+            currentIndex = 0;
+        }
+    }
+
+    private void updateDelegates() {
+        currentOpacity.setDelegate(details[currentIndex].opacityProperty());
+        currentScale.setDelegate(details[currentIndex].scaleProperty());
+    }
 
 
 }
