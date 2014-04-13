@@ -34,6 +34,7 @@ public class Spinner2 {
     public void reset() {
         for (Detail detail : details) {
             detail.setHighlight(false);
+            detail.setPulse(false);
         }
     }
 
@@ -53,6 +54,7 @@ public class Spinner2 {
         spinning = false;
         timeline.stop();
         details[currentIndex].setHighlight(true);
+        details[currentIndex].setPulse(true);
     }
 
     private void setupTimeline() {

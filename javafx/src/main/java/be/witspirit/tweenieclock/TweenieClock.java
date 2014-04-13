@@ -19,6 +19,9 @@ import java.util.Random;
 
 public class TweenieClock extends Application {
 
+    private Detail center;
+    private Spinner2 spinner;
+
     public static void main(String... args) {
         launch(args);
     }
@@ -41,7 +44,8 @@ public class TweenieClock extends Application {
         AnchorPane.setRightAnchor(clockView, 0.0);
         root.getChildren().add(clockView);
 
-        Detail center = addTo(root, new Detail("purple_center", 1089, 919));
+
+        center = addTo(root, new Detail("purple_center", 1089, 919));
 
         Detail tv = addTo(root, new Detail("yellow_tv", 957, 462));
         Detail puppetry = addTo(root, new Detail("blue_puppetry", 1338, 467));
@@ -56,14 +60,17 @@ public class TweenieClock extends Application {
 
         primaryStage.show();
 
-        final Spinner2 spinner = new Spinner2(tv, puppetry, music, wii, playground, train, show, tinker);
+        spinner = new Spinner2(tv, puppetry, music, wii, playground, train, show, tinker);
 
         final Random random = new Random();
 
-        center.getOverlay().setOnMouseClicked(new EventHandler<MouseEvent>() {
+        reset();
+
+        center.getNode().setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (!spinner.isSpinning()) {
+                    center.setHighlight(false).setPulse(false);
                     spinner.start();
 
                     // spinner.stopBetweenCycles(4, 8);
@@ -82,12 +89,36 @@ public class TweenieClock extends Application {
             }
         });
 
+        root.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (!spinner.isSpinning()) {
+                    reset();
+                }
+            }
+        });
+
+    }
+
+    private void reset() {
+        spinner.reset();
+        center.setHighlight(true).setPulse(true);
     }
 
     private Detail addTo(AnchorPane pane, Detail detail) {
-        AnchorPane.setLeftAnchor(detail.getOverlay(), detail.getTopLeftAnchor().getX());
-        AnchorPane.setTopAnchor(detail.getOverlay(), detail.getTopLeftAnchor().getY());
-        pane.getChildren().add(detail.getOverlay());
+//        AnchorPane.setLeftAnchor(detail.getDetailView(), detail.getTopLeftAnchor().getX());
+//        AnchorPane.setTopAnchor(detail.getDetailView(), detail.getTopLeftAnchor().getY());
+//        pane.getChildren().add(detail.getDetailView());
+//
+//        AnchorPane.setLeftAnchor(detail.getOverlay(), detail.getTopLeftAnchor().getX());
+//        AnchorPane.setTopAnchor(detail.getOverlay(), detail.getTopLeftAnchor().getY());
+//        pane.getChildren().add(detail.getOverlay());
+
+        AnchorPane.setLeftAnchor(detail.getNode(), detail.getTopLeftAnchor().getX());
+        AnchorPane.setTopAnchor(detail.getNode(), detail.getTopLeftAnchor().getY());
+        pane.getChildren().add(detail.getNode());
+
+
         return detail;
     }
 
