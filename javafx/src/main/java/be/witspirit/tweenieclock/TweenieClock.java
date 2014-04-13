@@ -20,7 +20,7 @@ import java.util.Random;
 public class TweenieClock extends Application {
 
     private Detail center;
-    private Spinner2 spinner;
+    private Spinner spinner;
 
     public static void main(String... args) {
         launch(args);
@@ -60,7 +60,7 @@ public class TweenieClock extends Application {
 
         primaryStage.show();
 
-        spinner = new Spinner2(tv, puppetry, music, wii, playground, train, show, tinker);
+        spinner = new Spinner(tv, puppetry, music, wii, playground, train, show, tinker);
 
         final Random random = new Random();
 
@@ -72,8 +72,6 @@ public class TweenieClock extends Application {
                 if (!spinner.isSpinning()) {
                     center.setHighlight(false).setPulse(false);
                     spinner.start();
-
-                    // spinner.stopBetweenCycles(4, 8);
 
                     int spinningTime = 4 * 1000 + random.nextInt(4500); // 4 seconds spinning + an arbitrary extra up to 4 seconds
 
@@ -106,14 +104,6 @@ public class TweenieClock extends Application {
     }
 
     private Detail addTo(AnchorPane pane, Detail detail) {
-//        AnchorPane.setLeftAnchor(detail.getDetailView(), detail.getTopLeftAnchor().getX());
-//        AnchorPane.setTopAnchor(detail.getDetailView(), detail.getTopLeftAnchor().getY());
-//        pane.getChildren().add(detail.getDetailView());
-//
-//        AnchorPane.setLeftAnchor(detail.getOverlay(), detail.getTopLeftAnchor().getX());
-//        AnchorPane.setTopAnchor(detail.getOverlay(), detail.getTopLeftAnchor().getY());
-//        pane.getChildren().add(detail.getOverlay());
-
         AnchorPane.setLeftAnchor(detail.getNode(), detail.getTopLeftAnchor().getX());
         AnchorPane.setTopAnchor(detail.getNode(), detail.getTopLeftAnchor().getY());
         pane.getChildren().add(detail.getNode());

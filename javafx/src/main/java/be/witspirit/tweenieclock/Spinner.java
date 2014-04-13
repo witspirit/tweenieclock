@@ -1,29 +1,34 @@
 package be.witspirit.tweenieclock;
 
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.animation.TimelineBuilder;
-import javafx.beans.property.DoubleProperty;
+import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Spinner {
+    private static final double TRANSITION_TIME = 0.08; // Seconds
+    private static final double STABLE_TIME = 0.04; // Seconds
+
+
     private Detail[] details;
-    private List<Timeline> timelines;
     private boolean spinning = false;
     private Random random = new Random();
 
+    private Timeline timeline;
+    private int currentIndex = 0;
+    private DelegatedDoubleValue currentOpacity;
+    private DelegatedDoubleValue currentScale;
+
+
     public Spinner(Detail... details) {
         this.details = details;
+        currentOpacity = new DelegatedDoubleValue(details[currentIndex].opacityProperty());
+        currentScale = new DelegatedDoubleValue(details[currentIndex].scaleProperty());
 
-        setupTimelines();
+        setupTimeline();
     }
 
     public boolean isSpinning() {
@@ -33,6 +38,7 @@ public class Spinner {
     public void reset() {
         for (Detail detail : details) {
             detail.setHighlight(false);
+            detail.setPulse(false);
         }
     }
 
@@ -40,37 +46,52 @@ public class Spinner {
         if (!spinning) {
             reset();
             spinning = true;
-            timelines.get(random.nextInt(details.length)).playFromStart();
+
+            currentIndex = random.nextInt(details.length);
+            updateDelegates();
+
+            timeline.playFromStart();
         }
     }
 
     public void stop() {
         spinning = false;
+        timeline.stop();
+        details[currentIndex].setHighlight(true);
+        details[currentIndex].setPulse(true);
     }
 
-    private void setupTimelines() {
-        timelines = new ArrayList<>();
-        for (int i=0; i < details.length; i++) {
-            DoubleProperty opacity = details[i].opacityProperty();
-            Timeline timeline = TimelineBuilder.create().cycleCount(2).autoReverse(true).keyFrames(
-                    new KeyFrame(Duration.ZERO, new KeyValue(opacity, 0.0)),
-                    new KeyFrame(Duration.seconds(0.1), new KeyValue(opacity, 0.9)),
-                    new KeyFrame(Duration.seconds(0.15), new KeyValue(opacity, 0.9))
-            ).build();
-            final int nextTimelineIndex = i == details.length-1 ? 0 : i+1;
-            timeline.setOnFinished(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    Timeline nextTimeline = timelines.get(nextTimelineIndex);
-                    if (spinning) {
-                        nextTimeline.playFromStart();
-                    } else {
-                        details[nextTimelineIndex].setHighlight(true);
-                    }
-                }
-            });
-            timelines.add(timeline);
+    private void setupTimeline() {
+        timeline = TimelineBuilder.create().cycleCount(Timeline.INDEFINITE).autoReverse(false).keyFrames(
+            new KeyFrame(Duration.ZERO, new KeyValue(currentOpacity, 0.0)),
+            new KeyFrame(Duration.seconds(TRANSITION_TIME), new KeyValue(currentOpacity, 0.9, Interpolator.EASE_BOTH), new KeyValue(currentScale, 1.05, Interpolator.EASE_BOTH)),
+            new KeyFrame(Duration.seconds(TRANSITION_TIME+STABLE_TIME), new KeyValue(currentOpacity, 0.9), new KeyValue(currentScale, 1.05)),
+            new KeyFrame(Duration.seconds(TRANSITION_TIME*2 + STABLE_TIME), new SetNextHandler(), new KeyValue(currentOpacity, 0.0, Interpolator.EASE_BOTH), new KeyValue(currentScale, 1.0, Interpolator.EASE_BOTH))
+        ).build();
+    }
+
+    private class SetNextHandler implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent actionEvent) {
+            if (spinning) {
+                incrementIndex();
+                updateDelegates();
+            }
         }
     }
+
+    private void incrementIndex() {
+        currentIndex++;
+        if (currentIndex >= details.length) {
+            currentIndex = 0;
+        }
+    }
+
+    private void updateDelegates() {
+        currentOpacity.setDelegate(details[currentIndex].opacityProperty());
+        currentScale.setDelegate(details[currentIndex].scaleProperty());
+    }
+
 
 }
